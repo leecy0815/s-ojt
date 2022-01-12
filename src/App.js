@@ -1,44 +1,157 @@
 import { Component } from "react";
+import * as _ from "underscore";
+import axios from "axios";
+import Movie from "./Movie";
+
+const lhd = '[App]';
+const MOVIE_LIST_URL = 'https://yts-proxy.now.sh/list_movies.json?sort_by=rating';
 
 class App extends Component {
   state = {
-    number: 1,
-    count: 0,
+    isLoading: true,
+    movies: [],
   };
 
-  add = () => {
-    this.setState((current) => ({
-      count: current.count + current.number,
-    }));
-  };
-
-  minus = () => {
-    this.setState((current) => ({
-      count: current.count - current.number,
-    }));
-  };
-
-  resetNumber = () => {
-    this.setState({ count: 0, number: 1 });
+  componentDidMount() {
+    console.log('[App] componentDidMount()');
+    // 영화 데이터 로딩!
+    this.getMovieList();
+    // setTimeout(() => {
+    //   this.setState({ isLoading: false });
+    // }, 1000 * 6);
   }
 
-  setNumber = (e) => {
-    const number = Number(e.target.value);
-    this.setState({ number })
+  async getMovieList() {
+    console.log('[App] << start get movie list');
+    const movies = await axios.get(MOVIE_LIST_URL)
+      .then((response) => {
+        const resData = response.data;
+        return {
+          result: true,
+          data: resData.data.movies,
+        };
+      })
+      .catch((error) => {
+        console.error(`can't read movie list. error [${error.toString()}]`);
+        return {
+          result: false,
+          data: [],
+        };
+      });
+
+      if (!movies.result) {
+        console.error('[App] >> failed to read movie list.');
+        return;
+      }
+
+      console.log('[App] >> success to read movie list');
+      this.setState({
+        isLoading: false,
+        movies: movies.data,
+      });
   }
 
+  
   render() {
+    console.log('[App] render()');
+    const {
+      isLoading,
+      movies,
+    } = this.state;
+
     return (
-      <div>
-        <h1>The number is: {this.state.count}</h1>
-        <button onClick={this.add}>+</button>
-        <button onClick={this.minus}>-</button>
-        <button onClick={this.resetNumber}>reset</button>
-        <input onChange={this.setNumber} type="number"/>
-      </div>
+      <section class="container">
+        {
+          isLoading ? 
+            (
+              <div class="loader">
+                <span class="loader_text">Loading...</span>
+              </div>
+            ) : (
+              <div class="movies">
+                {
+                  movies.map((movie) => {
+                    return <Movie
+                      key={movie.id}
+                      title={movie.title}
+                      year={movie.year}
+                      summary={movie.summary}
+                      poster={movie.medium_cover_image}
+                    />
+                  })
+                }
+              </div>
+            )
+        }
+      </section>
     );
   }
 }
+
+// import { Component } from "react";
+
+// class App extends Component {
+//   // (Life Cycle) 생성자
+//   constructor(props) {
+//     super(props);
+//     console.log('[App] constructor()');
+//   }
+
+//   // (Life Cycle) 최초 화면을 rendering 이후 호출
+//   componentDidMount() {
+//     console.log('[App] componentDidMount()');
+//   }
+
+//   // (Life Cycle) 변경된 화면을 rendering 이후 호출
+//   componentDidUpdate() {
+//     console.log('[App] componentDidUpdate()');
+//   }
+
+//   // (Life Cycle) 화면이 사라지기 직전에 호출
+//   componentWillUnmount() {
+//     console.log('[App] componentWillUnmount()');
+//   }
+
+//   state = {
+//     number: 1,
+//     count: 0,
+//   };
+
+//   add = () => {
+//     this.setState((current) => ({
+//       count: current.count + current.number,
+//     }));
+//   };
+
+//   minus = () => {
+//     this.setState((current) => ({
+//       count: current.count - current.number,
+//     }));
+//   };
+
+//   resetNumber = () => {
+//     this.setState({ count: 0, number: 1 });
+//   }
+
+//   setNumber = (e) => {
+//     const number = Number(e.target.value);
+//     this.setState({ number })
+//   }
+
+//   // (Life Cycle) render
+//   render() {
+//     console.log('[App] render()');
+//     return (
+//       <div>
+//         <h1>The number is: {this.state.count}</h1>
+//         <button onClick={this.add}>+</button>
+//         <button onClick={this.minus}>-</button>
+//         <button onClick={this.resetNumber}>reset</button>
+//         <input onChange={this.setNumber} type="number"/>
+//       </div>
+//     );
+//   }
+// }
 // import propTypes from "prop-types";
 
 // class Food extends Component {
