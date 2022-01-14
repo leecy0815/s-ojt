@@ -1,91 +1,107 @@
 import { Component } from "react";
-import * as _ from "underscore";
-import axios from "axios";
-import Movie from "./Movie";
+import { HashRouter, Route } from 'react-router-dom';
+import './App.css';
+import About from "./routes/About";
+import Home from "./routes/Home";
+import Navigation from "./components/Navigation";
+import Detail from "./routes/Detail";
 
 const lhd = '[App]';
-const MOVIE_LIST_URL = 'https://yts-proxy.now.sh/list_movies.json?sort_by=rating';
 
 class App extends Component {
-  state = {
-    isLoading: true,
-    movies: [],
-  };
-
-  componentDidMount() {
-    console.log('[App] componentDidMount()');
-    // 영화 데이터 로딩!
-    this.getMovieList();
-    // setTimeout(() => {
-    //   this.setState({ isLoading: false });
-    // }, 1000 * 6);
-  }
-
-  async getMovieList() {
-    console.log('[App] << start get movie list');
-    const movies = await axios.get(MOVIE_LIST_URL)
-      .then((response) => {
-        const resData = response.data;
-        return {
-          result: true,
-          data: resData.data.movies,
-        };
-      })
-      .catch((error) => {
-        console.error(`can't read movie list. error [${error.toString()}]`);
-        return {
-          result: false,
-          data: [],
-        };
-      });
-
-      if (!movies.result) {
-        console.error('[App] >> failed to read movie list.');
-        return;
-      }
-
-      console.log('[App] >> success to read movie list');
-      this.setState({
-        isLoading: false,
-        movies: movies.data,
-      });
-  }
-
-  
   render() {
-    console.log('[App] render()');
-    const {
-      isLoading,
-      movies,
-    } = this.state;
-
+    console.log(`${lhd} render()`);
     return (
-      <section class="container">
-        {
-          isLoading ? 
-            (
-              <div class="loader">
-                <span class="loader_text">Loading...</span>
-              </div>
-            ) : (
-              <div class="movies">
-                {
-                  movies.map((movie) => {
-                    return <Movie
-                      key={movie.id}
-                      title={movie.title}
-                      year={movie.year}
-                      summary={movie.summary}
-                      poster={movie.medium_cover_image}
-                    />
-                  })
-                }
-              </div>
-            )
-        }
-      </section>
+      <HashRouter>
+        <Navigation />
+        <Route path="/" exact={true} component={Home}/>
+        <Route path="/about"  component={About}/>
+        <Route path="/movie-detail" component={Detail}/>
+      </HashRouter>
     );
   }
+  // state = {
+  //   isLoading: true,
+  //   movies: [],
+  // };
+
+  // componentDidMount() {
+  //   console.log('[App] componentDidMount()');
+  //   // 영화 데이터 로딩!
+  //   this.getMovieList();
+  //   // setTimeout(() => {
+  //   //   this.setState({ isLoading: false });
+  //   // }, 1000 * 6);
+  // }
+
+  // async getMovieList() {
+  //   console.log('[App] << start get movie list');
+  //   const movies = await axios.get(MOVIE_LIST_URL)
+  //     .then((response) => {
+  //       const resData = response.data;
+  //       return {
+  //         result: true,
+  //         data: resData.data.movies,
+  //       };
+  //     })
+  //     .catch((error) => {
+  //       console.error(`${lhd} >> scan't read movie list. error [${error.toString()}]`);
+  //       return {
+  //         result: false,
+  //         data: [],
+  //       };
+  //     });
+
+  //     if (!movies.result) {
+  //       console.error('[App] >> failed to read movie list.');
+  //       return;
+  //     }
+
+  //     console.log('[App] >> success to read movie list');
+  //     this.setState({
+  //       isLoading: false,
+  //       movies: movies.data,
+  //     });
+  // }
+
+  
+  // render() {
+  //   console.log('[App] render()');
+  //   const {
+  //     isLoading,
+  //     movies,
+  //   } = this.state;
+
+  //   return (
+  //     <section className="container">
+  //       {
+  //         isLoading ? 
+  //           (
+  //             <div className="loader">
+  //               <span className="loader_text">Loading...</span>
+  //             </div>
+  //           ) : (
+  //             <div className="movies">
+  //               {
+  //                 movies.map((movie) => {
+  //                   return (
+  //                   <Movie
+  //                     key={movie.id}
+  //                     title={movie.title}
+  //                     year={movie.year}
+  //                     summary={movie.summary}
+  //                     poster={movie.medium_cover_image}
+  //                     genres={movie.genres}
+  //                   />
+  //                   );
+  //                 })
+  //               }
+  //             </div>
+  //           )
+  //       }
+  //     </section>
+  //   );
+  // }
 }
 
 // import { Component } from "react";
