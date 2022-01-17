@@ -4,7 +4,7 @@ import Movie from "../components/Movie.js";
 import './Home.css';
 
 const lhd = '[Home]';
-const MOVIE_LIST_URL = 'https://yts-proxy.now.sh/list_movies.json?sort_by=rating';
+const MOVIE_LIST_URL = 'https://yts-proxy.now.sh/list_movies.json?sort_by=like_count';
 
 class Home extends Component {
   state = {

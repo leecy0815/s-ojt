@@ -3,6 +3,8 @@ import propTypes from "prop-types";
 import './Movie.css'
 import { Link } from "react-router-dom";
 
+const SUMMARY_MAX_LENGTH = 30;
+
 class Movie extends Component {
     render() {
         const {
@@ -12,6 +14,18 @@ class Movie extends Component {
             poster,
             genres,
         } = this.props;
+
+        const summaries = summary.split(' ');
+        let _summary = '';
+        if (summaries.length >= SUMMARY_MAX_LENGTH) {
+            for (let i = 0; i < SUMMARY_MAX_LENGTH; i += 1) {
+                i === SUMMARY_MAX_LENGTH - 1
+                    ? _summary += `${summaries[i]} ...` 
+                    : _summary += `${summaries[i]} `;
+            }
+        } else {
+            _summary = summary;
+        }
 
         return (
             <div className="movie">
@@ -23,7 +37,7 @@ class Movie extends Component {
                         summary,
                         poster,
                         genres,
-                    }
+                    },
                 }}>
                     <img src={poster} alt={title} title={title}/>
                     <div className="movie_data">
@@ -34,16 +48,21 @@ class Movie extends Component {
                         <ul className="movie_genres">
                             {
                                 genres.map((genre, idx) => {
+                                    let _genre = '';
+                                    if (genres.length === 1) _genre = genre;
+                                    idx === genres.length - 1
+                                        ? _genre = `${genre}` 
+                                        : _genre = `${genre}, `;
                                     return (
                                         <li key={idx} className="movie_genres">
-                                            {genre}
+                                            {_genre}
                                         </li>
                                     );
                                 })
                             }
                         </ul>
                         <p className="movie_summary">
-                            {summary.length > 180 ? summary.slice(0, 180) + '...' : summary}
+                            {_summary}
                         </p>
                     </div>
                 </Link>

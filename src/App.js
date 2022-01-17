@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { HashRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import './App.css';
 import About from "./routes/About";
 import Home from "./routes/Home";
@@ -12,12 +12,12 @@ class App extends Component {
   render() {
     console.log(`${lhd} render()`);
     return (
-      <HashRouter>
+      <BrowserRouter>
         <Navigation />
         <Route path="/" exact={true} component={Home}/>
         <Route path="/about"  component={About}/>
         <Route path="/movie-detail" component={Detail}/>
-      </HashRouter>
+      </BrowserRouter>
     );
   }
   // state = {
